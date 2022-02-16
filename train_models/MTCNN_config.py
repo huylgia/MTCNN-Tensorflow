@@ -4,11 +4,11 @@ from easydict import EasyDict as edict
 
 config = edict()
 
-config.BATCH_SIZE = 30
+config.BATCH_SIZE = 364
 config.CLS_OHEM = True
 config.CLS_OHEM_RATIO = 0.7
 config.BBOX_OHEM = False
 config.BBOX_OHEM_RATIO = 0.7
 
 config.EPS = 1e-14
-config.LR_EPOCH = [10,2000,4000]
+config.LR_EPOCH = [2,1000,1500]

@@ -31,9 +31,10 @@ def train_model(base_lr, loss, data_num):
     boundaries = [int(epoch * data_num / config.BATCH_SIZE) for epoch in config.LR_EPOCH]
     #lr_values[0.01,0.001,0.0001,0.00001]
     lr_values = [base_lr * (lr_factor ** x) for x in range(0, len(config.LR_EPOCH) + 1)]
+    #lr_values = [0.0001,0.00008,0.00005,0.00002,0.00001,0.000001,0.000000]
     #control learning rate
     lr_op = tf.train.piecewise_constant(global_step, boundaries, lr_values)
-    optimizer = tf.train.MomentumOptimizer(lr_op, 0.9)
+    optimizer = tf.train.MomentumOptimizer(lr_op,0.9)
     train_op = optimizer.minimize(loss, global_step)
     return train_op, lr_op
 
@@ -72,11 +73,11 @@ def random_flip_images(image_batch,label_batch,landmark_batch):
             cv2.flip(image_batch[i],1,image_batch[i])        
         
         #pay attention: flip landmark    
-        for i in fliplandmarkindexes:
+        for _,i in enumerate(fliplandmarkindexes):
             landmark_ = landmark_batch[i].reshape((-1,2))
-            landmark_ = np.asarray([(1-x, y) for (x, y) in landmark_])
-            # landmark_[[0, 1]] = landmark_[[1, 0]]#left eye<->right eye
-            # landmark_[[2, 3]] = landmark_[[3, 2]]#left mouth<->right mouth        
+            landmark_ = np.asarray([(x, y) for (x, y) in landmark_])
+            landmark_[[0, 1]] = landmark_[[1, 0]]#left eye<->right eye
+            landmark_[[2, 3]] = landmark_[[3, 2]]#left mouth<->right mouth    
             landmark_batch[i] = landmark_.ravel()
         
     return image_batch,landmark_batch
@@ -110,7 +111,7 @@ def train(net_factory, prefix, end_epoch, base_dir,
     # f = open(label_file, 'r')
     # # get number of training examples
     # num = len(f.readlines())
-    num = 16
+    num = 364
     # print("Total size of the dataset is: ", num)
     # print(prefix)
 
@@ -130,7 +131,7 @@ def train(net_factory, prefix, end_epoch, base_dir,
         dataset_dirs = plate_dir
         # landmark_radio=1.0/6
         # landmark_batch_size = int(np.ceil(config.BATCH_SIZE*landmark_radio))
-        landmark_batch_size = 30
+        landmark_batch_size = 364
         assert landmark_batch_size != 0,"Batch Size Error "
         batch_sizes = landmark_batch_size
         #print('batch_size is:', batch_sizes)
@@ -189,7 +190,11 @@ def train(net_factory, prefix, end_epoch, base_dir,
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
     i = 0
     #total steps
-    MAX_STEP = int(num / config.BATCH_SIZE + 1) * end_epoch
+    '''Adjust'''
+    if num % config.BATCH_SIZE != 0:
+        MAX_STEP = int(num / config.BATCH_SIZE + 1) * end_epoch
+    else:
+        MAX_STEP = int(num / config.BATCH_SIZE ) * end_epoch
     epoch = 0
     sess.graph.finalize()
     try:

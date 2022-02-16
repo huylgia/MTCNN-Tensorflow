@@ -12,7 +12,7 @@ import tensorflow as tf
 from prepare_data.tfrecord_utils import _process_image_withoutcoder, _convert_to_example_simple
 
 
-def _add_to_tfrecord(filename, image_example, tfrecord_writer):
+def _add_to_tfrecord(imdir,filename, image_example, tfrecord_writer):
     """Loads data from image and annotations files and add them to a TFRecord.
 
     Args:
@@ -25,7 +25,7 @@ def _add_to_tfrecord(filename, image_example, tfrecord_writer):
     #height:original image's height
     #width:original image's width
     #image_example dict contains image's info
-    image_data, height, width = _process_image_withoutcoder('/content/ONet/' + filename, 'ONet')
+    image_data, height, width = _process_image_withoutcoder(imdir + '/' + filename, 'ONet')
     example = _convert_to_example_simple(image_example, image_data)
     tfrecord_writer.write(example.SerializeToString())
 
@@ -66,7 +66,7 @@ def run(dataset_dir, net, output_dir, name='MTCNN', shuffling=False):
                 sys.stdout.write('\r>> Converting image %d/%d' % (i + 1, len(dataset)))
                 sys.stdout.flush()
             filename = image_example['filename']
-            _add_to_tfrecord(filename, image_example, tfrecord_writer)
+            _add_to_tfrecord(dataset_dir,filename, image_example, tfrecord_writer)
     # Finally, write the labels file:
     # labels_to_class_names = dict(zip(range(len(_CLASS_NAMES)), _CLASS_NAMES))
     # dataset_utils.write_label_file(labels_to_class_names, dataset_dir)
@@ -142,7 +142,7 @@ def get_dataset(image_dir,net):
 
 
 if __name__ == '__main__':
-    dir = '/content/ONet'
+    dir = '/content/LPR_cropped'
     net = 'ONet'
     output_directory = '/content/MTCNN-Tensorflow'
     run(dir, net, output_directory, shuffling=True)
