@@ -1,0 +1,2 @@
+model_checkpoint_path: "/content/MTCNN-Tensorflow/data/MTCNN_model/ONet_landmark/ONet-13332"
+all_model_checkpoint_paths: "/content/MTCNN-Tensorflow/data/MTCNN_model/ONet_landmark/ONet-13332"
