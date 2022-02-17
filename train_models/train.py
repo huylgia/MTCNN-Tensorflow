@@ -111,7 +111,7 @@ def train(net_factory, prefix, end_epoch, base_dir,
     # f = open(label_file, 'r')
     # # get number of training examples
     # num = len(f.readlines())
-    num = 364
+    num = config.BATCH_SIZE
     # print("Total size of the dataset is: ", num)
     # print(prefix)
 
@@ -131,7 +131,7 @@ def train(net_factory, prefix, end_epoch, base_dir,
         dataset_dirs = plate_dir
         # landmark_radio=1.0/6
         # landmark_batch_size = int(np.ceil(config.BATCH_SIZE*landmark_radio))
-        landmark_batch_size = 364
+        landmark_batch_size = config.BATCH_SIZE
         assert landmark_batch_size != 0,"Batch Size Error "
         batch_sizes = landmark_batch_size
         #print('batch_size is:', batch_sizes)
@@ -206,7 +206,7 @@ def train(net_factory, prefix, end_epoch, base_dir,
             print(image_batch, label_batch, bbox_batch,landmark_batch)
             image_batch_array, label_batch_array, bbox_batch_array,landmark_batch_array = sess.run([image_batch, label_batch, bbox_batch,landmark_batch])
             #random flip
-            image_batch_array,landmark_batch_array = random_flip_images(image_batch_array,label_batch_array,landmark_batch_array)
+            #image_batch_array,landmark_batch_array = random_flip_images(image_batch_array,label_batch_array,landmark_batch_array)
             '''
             print('im here')
             print(image_batch_array.shape)

@@ -22,7 +22,7 @@ if __name__ == '__main__':
     model_name = 'MTCNN'
     model_path = '/content/MTCNN-Tensorflow/data/%s_model/ONet_landmark/ONet' % model_name
     prefix = model_path
-    end_epoch = 2000
+    end_epoch = 20000
     display = 10
     lr = 0.0001
     train_ONet(base_dir, prefix, end_epoch, display, lr)
