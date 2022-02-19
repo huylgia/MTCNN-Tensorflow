@@ -111,7 +111,7 @@ def train(net_factory, prefix, end_epoch, base_dir,
     # f = open(label_file, 'r')
     # # get number of training examples
     # num = len(f.readlines())
-    num = config.BATCH_SIZE
+    num = config.NUM
     # print("Total size of the dataset is: ", num)
     # print(prefix)
 
