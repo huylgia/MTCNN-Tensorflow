@@ -135,14 +135,14 @@ def get_dataset(image_dir,net):
           data_example['bbox'] = bbox
           data_example_2 = copy.deepcopy(data_example)
           data_example_2['label'] = -2
-          #dataset.append(data_example)
+          dataset.append(data_example)
           dataset.append(data_example_2)
 
     return dataset
 
 
 if __name__ == '__main__':
-    dir = '/content/PlateLincense/Dataset_19022022/cropped'
+    dir = '/content/Yellow'
     net = 'ONet'
     output_directory = '/content/MTCNN-Tensorflow'
     run(dir, net, output_directory, shuffling=True)
