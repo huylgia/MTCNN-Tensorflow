@@ -198,7 +198,7 @@ def train(net_factory, prefix, end_epoch, base_dir,
     epoch = 0
     sess.graph.finalize()
     try:
-
+        minimize_loss = 1e+99
         for step in range(MAX_STEP):
             i = i + 1
             if coord.should_stop():
@@ -232,11 +232,15 @@ def train(net_factory, prefix, end_epoch, base_dir,
 
 
             #save every two epochs
-            if i * config.BATCH_SIZE > num*2:
+            if i * config.BATCH_SIZE >= num:
                 epoch = epoch + 1
                 i = 0
-                path_prefix = saver.save(sess, prefix, global_step=epoch*2)
-                print('path prefix is :', path_prefix)
+                if total_loss < minimize_loss:
+                    minimize_loss = total_loss
+                    path_prefix = saver.save(sess, prefix, global_step=epoch)
+                    print('path prefix is :', path_prefix)
+            if minimize_loss < 0.1:
+                break
             writer.add_summary(summary,global_step=step)
     except tf.errors.OutOfRangeError:
         print("完成！！！")

@@ -20,9 +20,9 @@ if __name__ == '__main__':
     base_dir = '/content/MTCNN-Tensorflow/plate_landmark.tfrecord_shuffle'
 
     model_name = 'MTCNN'
-    model_path = '/content/MTCNN-Tensorflow/data/%s_model/Yellow_ONet_landmark_25-02-2022/ONet' % model_name
+    model_path = '/content/MTCNN-Tensorflow/data/%s_model/White_ONet_landmark_25-02-2022/ONet' % model_name
     prefix = model_path
     end_epoch = 20000
     display = 10
-    lr = 0.0001
+    lr = 0.00001
     train_ONet(base_dir, prefix, end_epoch, display, lr)
