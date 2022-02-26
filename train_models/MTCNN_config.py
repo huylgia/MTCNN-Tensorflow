@@ -4,7 +4,7 @@ from easydict import EasyDict as edict
 
 config = edict()
 
-config.NUM = 1294
+config.NUM = 2000
 config.BATCH_SIZE = 64
 config.CLS_OHEM = True
 config.CLS_OHEM_RATIO = 0.7
