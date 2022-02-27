@@ -293,7 +293,7 @@ def O_Net(inputs,label=None,bbox_target=None,landmark_target=None,training=True)
                         activation_fn = prelu,
                         weights_initializer=slim.xavier_initializer(),
                         biases_initializer=tf.zeros_initializer(),
-                        weights_regularizer=slim.l2_regularizer(0.0005),                        
+                        weights_regularizer=slim.l2_regularizer(0.05),#0.0005                        
                         padding='valid'):
         print(inputs.get_shape())
         net = slim.conv2d(inputs, num_outputs=32, kernel_size=[3,3], stride=1, scope="conv1")
@@ -314,8 +314,10 @@ def O_Net(inputs,label=None,bbox_target=None,landmark_target=None,training=True)
         print(fc_flatten.get_shape())
         fc1 = slim.fully_connected(fc_flatten, num_outputs=256,scope="fc1")
         print(fc1.get_shape())
+        crop_fc1 = slim.dropout(fc1, 0.5,scope="crop_fc1")
+        print(crop_fc1.get_shape())
         #batch*2
-        cls_prob = slim.fully_connected(fc1,num_outputs=2,scope="cls_fc",activation_fn=tf.nn.softmax)
+        cls_prob = slim.fully_connected(crop_fc1,num_outputs=2,scope="cls_fc",activation_fn=tf.nn.softmax)
         print(cls_prob.get_shape())
         #batch*4
         bbox_pred = slim.fully_connected(fc1,num_outputs=4,scope="bbox_fc",activation_fn=None)
