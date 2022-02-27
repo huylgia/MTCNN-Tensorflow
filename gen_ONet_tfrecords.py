@@ -142,7 +142,7 @@ def get_dataset(image_dir,net):
 
 
 if __name__ == '__main__':
-    dir = '/content/White_Yellow'
+    dir = '/content/White_Yellow_LPR_cropped'
     net = 'ONet'
     output_directory = '/content/MTCNN-Tensorflow'
     run(dir, net, output_directory, shuffling=True)

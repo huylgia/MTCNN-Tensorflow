@@ -20,7 +20,7 @@ if __name__ == '__main__':
     base_dir = '/content/MTCNN-Tensorflow/plate_landmark.tfrecord_shuffle'
 
     model_name = 'MTCNN'
-    model_path = '/content/MTCNN-Tensorflow/data/%s_model/White_Yellow_ONet_landmark_25-02-2022/ONet' % model_name
+    model_path = '/content/MTCNN-Tensorflow/data/%s_model/White_Yellow_LPR_cropped_ONet_landmark_27-02-2022/ONet' % model_name
     prefix = model_path
     end_epoch = 10000
     display = 10
