@@ -1,2 +1,0 @@
-model_checkpoint_path: "/content/MTCNN-Tensorflow/data/MTCNN_model/White_ONet_landmark_25-02-2022/ONet-64"
-all_model_checkpoint_paths: "/content/MTCNN-Tensorflow/data/MTCNN_model/White_ONet_landmark_25-02-2022/ONet-64"

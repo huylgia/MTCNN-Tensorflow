@@ -1,0 +1,2 @@
+model_checkpoint_path: "/content/MTCNN-Tensorflow/data/MTCNN_model/White_Yellow_LPR_cropped_Drop50_Regu5_ONet_landmark/ONet-234"
+all_model_checkpoint_paths: "/content/MTCNN-Tensorflow/data/MTCNN_model/White_Yellow_LPR_cropped_Drop50_Regu5_ONet_landmark/ONet-234"

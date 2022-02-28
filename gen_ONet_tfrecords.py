@@ -5,6 +5,7 @@ import sys
 import time
 import json
 import cv2
+import argparse
 sys.path.append('/content/MTCNN-Tensorflow/prepare_data')
 
 import tensorflow as tf
@@ -139,10 +140,23 @@ def get_dataset(image_dir,net):
           dataset.append(data_example_2)
 
     return dataset
-
+def get_parser():
+    parser = argparse.ArgumentParser(description="Generate dataset")
+    parser.add_argument(
+        "--data_dir",
+        default="/content/White_Yellow_LPR_cropped",
+        help="path to test dataset directory",
+    )
+    parser.add_argument(
+        "--output_dir",
+        default="/content/MTCNN-Tensorflow",
+        help="path to submission directory",
+    )
+    return parser
 
 if __name__ == '__main__':
-    dir = '/content/White_Yellow_LPR_cropped'
+    args = get_parser().parse_args()
+    dir = args.data_dir
     net = 'ONet'
-    output_directory = '/content/MTCNN-Tensorflow'
+    output_directory = args.output_dir
     run(dir, net, output_directory, shuffling=True)

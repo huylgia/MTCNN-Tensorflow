@@ -37,7 +37,7 @@ def train_model(base_lr, loss, data_num,end_epoch):
     boundaries = [epoch * data_num // config.BATCH_SIZE if data_num % config.BATCH_SIZE == 0 else epoch * (data_num // config.BATCH_SIZE + 1)
                   for epoch in epoch_range]
     print(boundaries)
-    end_lr = 0.000001
+    end_lr = 0.0000009
     lr_values = [base_lr - (base_lr - end_lr)*epoch/len(epoch_range) for epoch 
     in range(0, len(epoch_range) + 1)]
 
@@ -250,7 +250,11 @@ def train(net_factory, prefix, end_epoch, base_dir,
         minimize_loss = 1e+99
         metrics = []
         avg = lambda items: float(sum(items)) / len(items)
-
+        model_dir = os.path.dirname(prefix)
+        if not os.path.exists(model_dir):
+            os.makedirs(model_dir)
+        log_file = model_dir + "/log.csv"
+        f = open(log_file,"a")
         for step in range(MAX_STEP):
             i = i + 1
             if coord.should_stop():
@@ -266,12 +270,14 @@ def train(net_factory, prefix, end_epoch, base_dir,
                 metrics_tranpose = zip(*metrics)
                 avg_cls_loss, avg_bbox_loss,avg_landmark_loss,avg_L2_loss,avg_lr,avg_acc = map(avg,metrics_tranpose)
                 total_loss = radio_cls_loss*avg_cls_loss + radio_bbox_loss*avg_bbox_loss + radio_landmark_loss*avg_landmark_loss + avg_L2_loss
-                print("%s : Step: %d/%d, accuracy: %3f, cls loss: %4f, bbox loss: %4f,Landmark loss :%4f,L2 loss: %4f, Total Loss: %4f ,lr:%f " % (
-                datetime.now(), step+1,MAX_STEP, avg_acc, avg_cls_loss, avg_bbox_loss,avg_landmark_loss, avg_L2_loss,total_loss, avg_lr))
+                info = "%s : Step: %d/%d, accuracy: %3f, cls loss: %4f, bbox loss: %4f,Landmark loss :%4f,L2 loss: %4f, Total Loss: %4f ,lr:%f " % (
+                datetime.now(), step+1,MAX_STEP, avg_acc, avg_cls_loss, avg_bbox_loss,avg_landmark_loss, avg_L2_loss,total_loss, avg_lr)
+                print(info)
                 if total_loss < minimize_loss:
                     minimize_loss = total_loss
                     path_prefix = saver.save(sess, prefix, global_step=epoch)
                     print('path prefix is :', path_prefix)
+                    f.write(info+"\n")
                 i = 0
                 metrics = []
             writer.add_summary(summary,global_step=step)
