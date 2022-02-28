@@ -164,7 +164,7 @@ def train(net_factory, prefix, end_epoch, base_dir,
     bbox_target = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE, 4], name='bbox_target')
     landmark_target = tf.placeholder(tf.float32,shape=[config.BATCH_SIZE,8],name='landmark_target')
     #get loss and accuracy
-    #input_image = image_color_distort(input_image)
+    input_image = image_color_distort(input_image)
     cls_loss_op,bbox_loss_op,landmark_loss_op,L2_loss_op,accuracy_op = net_factory(input_image, label, bbox_target,landmark_target,training=True)
     #train,update learning rate(3 loss)
     total_loss_op  = radio_cls_loss*cls_loss_op + radio_bbox_loss*bbox_loss_op + radio_landmark_loss*landmark_loss_op + L2_loss_op
@@ -254,7 +254,8 @@ def train(net_factory, prefix, end_epoch, base_dir,
         if not os.path.exists(model_dir):
             os.makedirs(model_dir)
         log_file = model_dir + "/log.csv"
-        f = open(log_file,"a")
+        f = open(log_file,"w")
+        info = "" 
         for step in range(MAX_STEP):
             i = i + 1
             if coord.should_stop():
@@ -270,17 +271,19 @@ def train(net_factory, prefix, end_epoch, base_dir,
                 metrics_tranpose = zip(*metrics)
                 avg_cls_loss, avg_bbox_loss,avg_landmark_loss,avg_L2_loss,avg_lr,avg_acc = map(avg,metrics_tranpose)
                 total_loss = radio_cls_loss*avg_cls_loss + radio_bbox_loss*avg_bbox_loss + radio_landmark_loss*avg_landmark_loss + avg_L2_loss
-                info = "%s : Step: %d/%d, accuracy: %3f, cls loss: %4f, bbox loss: %4f,Landmark loss :%4f,L2 loss: %4f, Total Loss: %4f ,lr:%f " % (
+                string = "%s : Step: %d/%d, accuracy: %3f, cls loss: %4f, bbox loss: %4f,Landmark loss :%4f,L2 loss: %4f, Total Loss: %4f ,lr:%f " % (
                 datetime.now(), step+1,MAX_STEP, avg_acc, avg_cls_loss, avg_bbox_loss,avg_landmark_loss, avg_L2_loss,total_loss, avg_lr)
-                print(info)
+                print(string)
                 if total_loss < minimize_loss:
                     minimize_loss = total_loss
                     path_prefix = saver.save(sess, prefix, global_step=epoch)
                     print('path prefix is :', path_prefix)
-                    f.write(info+"\n")
+                    info += string + "\n"
                 i = 0
                 metrics = []
             writer.add_summary(summary,global_step=step)
+        f.write(info[:-1])
+        f.close()
     except tf.errors.OutOfRangeError:
         print("完成！！！")
     finally:
