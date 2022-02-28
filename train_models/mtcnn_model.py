@@ -314,16 +314,16 @@ def O_Net(inputs,label=None,bbox_target=None,landmark_target=None,training=True)
         print(fc_flatten.get_shape())
         fc1 = slim.fully_connected(fc_flatten, num_outputs=256,scope="fc1")
         print(fc1.get_shape())
-        drop_fc1 = slim.dropout(fc1, 0.5,scope="drop_fc1")
-        print(drop_fc1.get_shape())
+        # drop_fc1 = slim.dropout(fc1, 0.5,scope="drop_fc1")
+        # print(drop_fc1.get_shape())
         #batch*2
-        cls_prob = slim.fully_connected(drop_fc1,num_outputs=2,scope="cls_fc",activation_fn=tf.nn.softmax)
+        cls_prob = slim.fully_connected(fc1,num_outputs=2,scope="cls_fc",activation_fn=tf.nn.softmax)
         print(cls_prob.get_shape())
         #batch*4
-        bbox_pred = slim.fully_connected(drop_fc1,num_outputs=4,scope="bbox_fc",activation_fn=None)
+        bbox_pred = slim.fully_connected(fc1,num_outputs=4,scope="bbox_fc",activation_fn=None)
         print(bbox_pred.get_shape())
         #batch*10
-        landmark_pred = slim.fully_connected(drop_fc1,num_outputs=8,scope="landmark_fc",activation_fn=None)
+        landmark_pred = slim.fully_connected(fc1,num_outputs=8,scope="landmark_fc",activation_fn=None)
         print(landmark_pred.get_shape())
         #train
         if training:
