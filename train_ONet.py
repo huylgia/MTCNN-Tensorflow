@@ -37,7 +37,7 @@ if __name__ == '__main__':
     model_path = model_dir + args.model_name + "/%s"%net
     base_dir = args.tfrecord_path
     prefix = model_path
-    end_epoch = 10000
+    end_epoch = 20000
     display = 10
     lr = 0.00001
     train_ONet(base_dir, prefix, end_epoch, display, lr)
