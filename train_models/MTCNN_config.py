@@ -4,8 +4,8 @@ from easydict import EasyDict as edict
 
 config = edict()
 
-config.NUM = 5946
-config.BATCH_SIZE = 512
+config.NUM = 9904
+config.BATCH_SIZE = 2048
 config.CLS_OHEM = True
 config.CLS_OHEM_RATIO = 0.7
 config.BBOX_OHEM = False

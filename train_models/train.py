@@ -33,7 +33,7 @@ def train_model(base_lr, loss, data_num,end_epoch):
     lr_values[0.01,0.001,0.0001,0.00001]
     lr_values = [base_lr * (lr_factor ** x) for x in range(0, len(config.LR_EPOCH) + 1)]'''
     #Adjust code
-    epoch_range = [int(0.1*end_epoch*i) for i in range(1,11)]
+    epoch_range = [int(0.05*end_epoch*i) for i in range(1,21)]
     boundaries = [epoch * data_num // config.BATCH_SIZE if data_num % config.BATCH_SIZE == 0 else epoch * (data_num // config.BATCH_SIZE + 1)
                   for epoch in epoch_range]
     print(boundaries)
@@ -43,7 +43,7 @@ def train_model(base_lr, loss, data_num,end_epoch):
 
     #control learning rate
     lr_op = tf.train.piecewise_constant(global_step, boundaries, lr_values)
-    optimizer = tf.train.MomentumOptimizer(lr_op,0.9)
+    optimizer = tf.train.FtrlOptimizer(lr_op)
     train_op = optimizer.minimize(loss, global_step)
     return train_op, lr_op
 
