@@ -43,7 +43,7 @@ def train_model(base_lr, loss, data_num,end_epoch):
 
     #control learning rate
     lr_op = tf.train.piecewise_constant(global_step, boundaries, lr_values)
-    optimizer = tf.train.FtrlOptimizer(lr_op)
+    optimizer = tf.train.MomentumOptimizer(lr_op,0.9)
     train_op = optimizer.minimize(loss, global_step)
     return train_op, lr_op
 
@@ -100,7 +100,7 @@ def image_color_distort(inputs):
     return inputs
 
 def train(net_factory, prefix, end_epoch, base_dir,
-          display=200, base_lr=0.01):
+          display=200, base_lr=0.01, pretrained_model=None):
     """
     train PNet/RNet/ONet
     :param net_factory:
@@ -181,6 +181,13 @@ def train(net_factory, prefix, end_epoch, base_dir,
     saver = tf.train.Saver(max_to_keep=0)
     sess.run(init)
 
+    #pretrained_model
+    if pretrained_model:
+      print('Restoring pretrained model: %s' % pretrained_model)
+      ckpt = tf.train.get_checkpoint_state(pretrained_model)
+      print(ckpt)
+      saver.restore(sess, ckpt.model_checkpoint_path)
+      
     #visualize some variables
     tf.summary.scalar("cls_loss",cls_loss_op)#cls_loss
     tf.summary.scalar("bbox_loss",bbox_loss_op)#bbox_loss
