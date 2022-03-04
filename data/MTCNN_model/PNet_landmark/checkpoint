@@ -1,2 +1,0 @@
-model_checkpoint_path: "/content/MTCNN-Tensorflow/data/MTCNN_model/PNet_landmark/PNet-4"
-all_model_checkpoint_paths: "/content/MTCNN-Tensorflow/data/MTCNN_model/PNet_landmark/PNet-4"

@@ -1,2 +1,0 @@
-model_checkpoint_path: "/content/MTCNN-Tensorflow/data/MTCNN_model/White_Yellow_LPR_cropped_Drop50_Regu5_Aug_ONet_landmark/ONet-7762"
-all_model_checkpoint_paths: "/content/MTCNN-Tensorflow/data/MTCNN_model/White_Yellow_LPR_cropped_Drop50_Regu5_Aug_ONet_landmark/ONet-7762"
