@@ -1,2 +1,0 @@
-model_checkpoint_path: "/content/MTCNN-Tensorflow/data/MTCNN_model/Part3_Part2_LPR_MTCNN_GO2_10_0_4_3_5_1_7_2_GO1_0_1_Aug_ONet_landmarks/ONet-5194"
-all_model_checkpoint_paths: "/content/MTCNN-Tensorflow/data/MTCNN_model/Part3_Part2_LPR_MTCNN_GO2_10_0_4_3_5_1_7_2_GO1_0_1_Aug_ONet_landmarks/ONet-5194"

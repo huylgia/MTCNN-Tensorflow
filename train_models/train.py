@@ -33,13 +33,17 @@ def train_model(base_lr, loss, data_num,end_epoch):
     lr_values[0.01,0.001,0.0001,0.00001]
     lr_values = [base_lr * (lr_factor ** x) for x in range(0, len(config.LR_EPOCH) + 1)]'''
     #Adjust code
-    epoch_range = [int(0.05*end_epoch*i) for i in range(1,21)]
-    boundaries = [epoch * data_num // config.BATCH_SIZE if data_num % config.BATCH_SIZE == 0 else epoch * (data_num // config.BATCH_SIZE + 1)
-                  for epoch in epoch_range]
-    print(boundaries)
     end_lr = 0.0000009
+    epoch_range = [int(0.05*end_epoch*i) for i in range(1,21)]
+    
     lr_values = [base_lr - (base_lr - end_lr)*epoch/len(epoch_range) for epoch 
     in range(0, len(epoch_range) + 1)]
+
+    boundaries = [epoch * data_num // config.BATCH_SIZE if data_num % config.BATCH_SIZE == 0 else epoch * (data_num // config.BATCH_SIZE + 1)
+                  for epoch in epoch_range]
+
+    print(boundaries)
+    print(lr_values)
 
     #control learning rate
     lr_op = tf.train.piecewise_constant(global_step, boundaries, lr_values)
@@ -140,7 +144,7 @@ def train(net_factory, prefix, end_epoch, base_dir,
         dataset_dirs = plate_dir
         # landmark_radio=1.0/6
         # landmark_batch_size = int(np.ceil(config.BATCH_SIZE*landmark_radio))
-        landmark_batch_size = config.BATCH_SIZE
+        landmark_batch_size = config.BATCH_SIZE*2
         assert landmark_batch_size != 0,"Batch Size Error "
         batch_sizes = landmark_batch_size
         #print('batch_size is:', batch_sizes)
@@ -159,17 +163,16 @@ def train(net_factory, prefix, end_epoch, base_dir,
         image_size = 48
     
     #define placeholder
-    input_image_1 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE/2, image_size, image_size, 3], name='input_image')
-    input_image_2 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE/2, image_size, image_size, 3], name='input_image')
+    input_image_1 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE, image_size, image_size, 3], name='input_image')
+    input_image_2 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE, image_size, image_size, 3], name='input_image')
 
-    label_1 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE/2], name='label')
-    label_2 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE/2], name='label')
+    label_1 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE], name='label')
+    label_2 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE], name='label')
 
-    bbox_target_1 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE/2, 4], name='bbox_target')
-    bbox_target_2 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE/2, 4], name='bbox_target')
-
-    landmark_target_1 = tf.placeholder(tf.float32,shape=[config.BATCH_SIZE/2,8],name='landmark_target')
-    landmark_target_2 = tf.placeholder(tf.float32,shape=[config.BATCH_SIZE/2,8],name='landmark_target')
+    bbox_target_1 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE, 4], name='bbox_target')
+    bbox_target_2 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE, 4], name='bbox_target')
+    landmark_target_1 = tf.placeholder(tf.float32,shape=[config.BATCH_SIZE,8],name='landmark_target')
+    landmark_target_2 = tf.placeholder(tf.float32,shape=[config.BATCH_SIZE,8],name='landmark_target')
 
     #get loss and accuracy
     input_image_2 = image_color_distort(input_image_2)
@@ -178,7 +181,7 @@ def train(net_factory, prefix, end_epoch, base_dir,
     label = tf.concat([label_1,label_2],0)
     bbox_target = tf.concat([bbox_target_1,bbox_target_2],0)
     landmark_target = tf.concat([landmark_target_1,landmark_target_2],0)
-    
+    print("================================%s========================================"%landmark_target.shape)
     cls_loss_op,bbox_loss_op,landmark_loss_op,L2_loss_op,accuracy_op = net_factory(input_image, label, bbox_target,landmark_target,training=True)
     #train,update learning rate(3 loss)
     total_loss_op  = radio_cls_loss*cls_loss_op + radio_bbox_loss*bbox_loss_op + radio_landmark_loss*landmark_loss_op + L2_loss_op
@@ -195,13 +198,24 @@ def train(net_factory, prefix, end_epoch, base_dir,
     saver = tf.train.Saver(max_to_keep=0)
     sess.run(init)
 
+    #Write log file
+    model_dir = os.path.dirname(prefix)
+    if not os.path.exists(model_dir):
+        os.makedirs(model_dir)
+    log_file = model_dir + "/log"
+    f = open(log_file,"a")
+
     #pretrained_model
     if pretrained_model:
       print('Restoring pretrained model: %s' % pretrained_model)
       ckpt = tf.train.get_checkpoint_state(pretrained_model)
       print(ckpt)
       saver.restore(sess, ckpt.model_checkpoint_path)
-      
+      string = "pretrained_model: %s"%(os.path.basename(pretrained_model))
+      f.write(string)
+    else:
+      f.write("pretrained_model: None")
+    
     #visualize some variables
     tf.summary.scalar("cls_loss",cls_loss_op)#cls_loss
     tf.summary.scalar("bbox_loss",bbox_loss_op)#bbox_loss
@@ -271,12 +285,6 @@ def train(net_factory, prefix, end_epoch, base_dir,
         minimize_loss = 1e+99
         metrics = []
         avg = lambda items: float(sum(items)) / len(items)
-        model_dir = os.path.dirname(prefix)
-        if not os.path.exists(model_dir):
-            os.makedirs(model_dir)
-        log_file = model_dir + "/log.csv"
-        f = open(log_file,"w")
-        info = "" 
         for step in range(MAX_STEP):
             i = i + 1
             if coord.should_stop():
@@ -299,11 +307,10 @@ def train(net_factory, prefix, end_epoch, base_dir,
                     minimize_loss = total_loss
                     path_prefix = saver.save(sess, prefix, global_step=epoch)
                     print('path prefix is :', path_prefix)
-                    info += string + "\n"
+                    f.write(string+"\n")
                 i = 0
                 metrics = []
             writer.add_summary(summary,global_step=step)
-        f.write(info[:-1])
         f.close()
     except tf.errors.OutOfRangeError:
         print("完成！！！")
