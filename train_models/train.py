@@ -159,12 +159,26 @@ def train(net_factory, prefix, end_epoch, base_dir,
         image_size = 48
     
     #define placeholder
-    input_image = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE, image_size, image_size, 3], name='input_image')
-    label = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE], name='label')
-    bbox_target = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE, 4], name='bbox_target')
-    landmark_target = tf.placeholder(tf.float32,shape=[config.BATCH_SIZE,8],name='landmark_target')
+    input_image_1 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE/2, image_size, image_size, 3], name='input_image')
+    input_image_2 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE/2, image_size, image_size, 3], name='input_image')
+
+    label_1 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE/2], name='label')
+    label_2 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE/2], name='label')
+
+    bbox_target_1 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE/2, 4], name='bbox_target')
+    bbox_target_2 = tf.placeholder(tf.float32, shape=[config.BATCH_SIZE/2, 4], name='bbox_target')
+
+    landmark_target_1 = tf.placeholder(tf.float32,shape=[config.BATCH_SIZE/2,8],name='landmark_target')
+    landmark_target_2 = tf.placeholder(tf.float32,shape=[config.BATCH_SIZE/2,8],name='landmark_target')
+
     #get loss and accuracy
-    input_image = image_color_distort(input_image)
+    input_image_2 = image_color_distort(input_image_2)
+
+    input_image = tf.concat([input_image_1,input_image_2],0)
+    label = tf.concat([label_1,label_2],0)
+    bbox_target = tf.concat([bbox_target_1,bbox_target_2],0)
+    landmark_target = tf.concat([landmark_target_1,landmark_target_2],0)
+    
     cls_loss_op,bbox_loss_op,landmark_loss_op,L2_loss_op,accuracy_op = net_factory(input_image, label, bbox_target,landmark_target,training=True)
     #train,update learning rate(3 loss)
     total_loss_op  = radio_cls_loss*cls_loss_op + radio_bbox_loss*bbox_loss_op + radio_landmark_loss*landmark_loss_op + L2_loss_op
