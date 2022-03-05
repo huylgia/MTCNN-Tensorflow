@@ -293,7 +293,7 @@ def O_Net(inputs,label=None,bbox_target=None,landmark_target=None,training=True)
                         activation_fn = prelu,
                         weights_initializer=slim.xavier_initializer(),
                         biases_initializer=tf.zeros_initializer(),
-                        weights_regularizer=slim.l2_regularizer(0.01),#0.0005                        
+                        weights_regularizer=slim.l2_regularizer(0.005),#0.0005                        
                         padding='valid'):
         print(inputs.get_shape())
         net = slim.conv2d(inputs, num_outputs=32+4, kernel_size=[3,3], stride=1, scope="conv1")
