@@ -1,3 +1,0 @@
-pretrained_model: LPR_MTCNN_GO2_1_5_Part0_2_2_5_3_6_7_4_3_1_Aug_ONet_landmarks
-pretrained_model: LPR_MTCNN_GO2_1_5_Part0_2_2_5_3_6_7_4_3_1_Aug_ONet_landmarks2022-03-04 12:26:21.996020 : Step: 7/105000, accuracy: 1.000000, cls loss: 0.000094, bbox loss: 3.126045,Landmark loss :5.335451,L2 loss: 0.880743, Total Loss: 7.779311 ,lr:0.000004 
-2022-03-04 12:26:39.044201 : Step: 21/105000, accuracy: 1.000000, cls loss: 0.000094, bbox loss: 3.136061,Landmark loss :5.305967,L2 loss: 0.880736, Total Loss: 7.754828 ,lr:0.000004 

@@ -1,2 +1,0 @@
-model_checkpoint_path: "/content/MTCNN-Tensorflow/data/MTCNN_model/Part3_Part2_LPR_MTCNN_GO2_8_6_10_0_4_3_5_9_1_7_2_GO1_0_1_Org_Aug_CustomLayer_ONet_landmarks_09:30:15_04-03-2022/ONet-3479"
-all_model_checkpoint_paths: "/content/MTCNN-Tensorflow/data/MTCNN_model/Part3_Part2_LPR_MTCNN_GO2_8_6_10_0_4_3_5_9_1_7_2_GO1_0_1_Org_Aug_CustomLayer_ONet_landmarks_09:30:15_04-03-2022/ONet-3479"
