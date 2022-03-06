@@ -300,6 +300,8 @@ def train(net_factory, prefix, end_epoch, base_dir,
                 metrics_tranpose = zip(*metrics)
                 avg_cls_loss, avg_bbox_loss,avg_landmark_loss,avg_L2_loss,avg_lr,avg_acc = map(avg,metrics_tranpose)
                 total_loss = radio_cls_loss*avg_cls_loss + radio_bbox_loss*avg_bbox_loss + radio_landmark_loss*avg_landmark_loss + avg_L2_loss
+                if np.isnan(total_loss):
+                    total_loss = radio_landmark_loss*avg_landmark_loss + avg_L2_loss
                 string = "%s : Step: %d/%d, accuracy: %3f, cls loss: %4f, bbox loss: %4f,Landmark loss :%4f,L2 loss: %4f, Total Loss: %4f ,lr:%f " % (
                 datetime.now(), step+1,MAX_STEP, avg_acc, avg_cls_loss, avg_bbox_loss,avg_landmark_loss, avg_L2_loss,total_loss, avg_lr)
                 print(string)
