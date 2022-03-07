@@ -38,7 +38,7 @@ def _get_output_filename(output_dir, name, net):
     return '%s/plate_landmark.tfrecord' % (output_dir)
     
 
-def run(dataset_dir, net, output_dir, name='MTCNN', shuffling=False):
+def run(dataset_dir, net, output_dir,only_landmark, name='MTCNN', shuffling=False):
     """Runs the conversion operation.
 
     Args:
@@ -52,7 +52,7 @@ def run(dataset_dir, net, output_dir, name='MTCNN', shuffling=False):
         print('Dataset files already exist. Exiting without re-creating them.')
         return
     # GET Dataset, and shuffling.
-    dataset = get_dataset(dataset_dir, net=net)
+    dataset = get_dataset(dataset_dir,only_landmark, net=net)
     # filenames = dataset['filename']
     if shuffling:
         tf_filename = tf_filename + '_shuffle'
@@ -74,7 +74,7 @@ def run(dataset_dir, net, output_dir, name='MTCNN', shuffling=False):
     print('\nFinished converting the MTCNN dataset!')
 
 import copy
-def get_dataset(image_dir,net):
+def get_dataset(image_dir,only_landmark,net):
     #item = 'imglists/PNet/train_%s_raw.txt' % net
     #item = 'imglists/PNet/train_%s_landmark.txt' % net
     # item = '%s/neg_%s.txt' % (net,net)
@@ -134,12 +134,17 @@ def get_dataset(image_dir,net):
               bbox['xmax'] = label['points'][1][0]*rw/w
               bbox['ymax'] = label['points'][1][1]*rh/h
           data_example['bbox'] = bbox
-          data_example_2 = copy.deepcopy(data_example)
-          data_example_2['label'] = -2
+          if only_landmark:
+              data_example['label'] = -2
+          else:
+            data_example_2 = copy.deepcopy(data_example)
+            data_example_2['label'] = -2
+            dataset.append(data_example_2)
           dataset.append(data_example)
-          dataset.append(data_example_2)
 
     return dataset
+def str_to_bool(string):
+    return string.lower() in ["true","false"]
 def get_parser():
     parser = argparse.ArgumentParser(description="Generate dataset")
     parser.add_argument(
@@ -152,6 +157,12 @@ def get_parser():
         default="/content/MTCNN-Tensorflow",
         help="path to submission directory",
     )
+    parser.add_argument(
+        "--only_landmark",
+        default="False",
+        type=str_to_bool,
+        help="Whether datasdet is createed with only landmark or all type (classifi, bbox, landmark)",
+    )
     return parser
 
 if __name__ == '__main__':
@@ -159,4 +170,5 @@ if __name__ == '__main__':
     dir = args.data_dir
     net = 'ONet'
     output_directory = args.output_dir
-    run(dir, net, output_directory, shuffling=True)
+    only_landmark = str_to_bool(args.only_landmark)
+    run(dir, net, output_directory,only_landmark,shuffling=True)

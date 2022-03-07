@@ -1,12 +1,12 @@
 #thay vào train_onet.py
 #coding:utf-8
-from train_models.mtcnn_model import O_Net
+from train_models.mtcnn_model import O_Net1,O_Net2
 from train_models.train import train
 import argparse
 import os
 
 
-def train_ONet(base_dir, prefix, end_epoch, display, lr, pretrained_model):
+def train_ONet(net_factory,base_dir, prefix, end_epoch, display, lr, pretrained_model):
     """
     train PNet
     :param dataset_dir: tfrecord path
@@ -16,7 +16,6 @@ def train_ONet(base_dir, prefix, end_epoch, display, lr, pretrained_model):
     :param lr:
     :return:
     """
-    net_factory = O_Net
     train(net_factory, prefix, end_epoch, base_dir, display=display, base_lr=lr, pretrained_model=pretrained_model)
 def get_parser():
     parser = argparse.ArgumentParser(description="Generate dataset")
@@ -50,4 +49,8 @@ if __name__ == '__main__':
     pretrained_model = None
     if args.pretrained_model:
       pretrained_model = os.path.expanduser(args.pretrained_model)
-    train_ONet(base_dir, prefix, end_epoch, display, lr, pretrained_model)
+    if "CustomLayer" in model_path:
+        net_factory = O_Net1
+    else:
+        net_factory = O_Net2
+    train_ONet(net_factory, prefix, end_epoch, display, lr, pretrained_model)
