@@ -134,10 +134,7 @@ def get_dataset(image_dir,net):
               bbox['xmax'] = label['points'][1][0]*rw/w
               bbox['ymax'] = label['points'][1][1]*rh/h
           data_example['bbox'] = bbox
-          data_example_2 = copy.deepcopy(data_example)
-          data_example_2['label'] = -2
           dataset.append(data_example)
-          dataset.append(data_example_2)
 
     return dataset
 def get_parser():

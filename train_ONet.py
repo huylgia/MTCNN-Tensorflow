@@ -1,6 +1,6 @@
 #thay vào train_onet.py
 #coding:utf-8
-from train_models.mtcnn_model import O_Net
+from train_models.mtcnn_model import O_Net1
 from train_models.train import train
 import argparse
 import os
@@ -16,7 +16,7 @@ def train_ONet(base_dir, prefix, end_epoch, display, lr, pretrained_model):
     :param lr:
     :return:
     """
-    net_factory = O_Net
+    net_factory = O_Net1
     train(net_factory, prefix, end_epoch, base_dir, display=display, base_lr=lr, pretrained_model=pretrained_model)
 def get_parser():
     parser = argparse.ArgumentParser(description="Generate dataset")
