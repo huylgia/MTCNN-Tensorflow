@@ -26,7 +26,7 @@ def _add_to_tfrecord(imdir,filename, image_example, tfrecord_writer):
     #height:original image's height
     #width:original image's width
     #image_example dict contains image's info
-    image_data, height, width = _process_image_withoutcoder(imdir + '/' + filename)
+    image_data, height, width = _process_image_withoutcoder(imdir + '/' + filename,"ONet")
     example = _convert_to_example_simple(image_example, image_data)
     tfrecord_writer.write(example.SerializeToString())
 
