@@ -175,15 +175,11 @@ def _process_image(filename, coder):
     assert image.shape[2] == 3
 
     return image_data, height, width
-def _process_image_withoutcoder(filename, net='PNet'):
+def _process_image_withoutcoder(filename):
     #print(filename)
     image = cv2.imread(filename)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
      # Clean the dirty data.        
-    if net == 'PNet':
-      image = cv2.resize(image, (12, 12))
-    if net == 'ONet':
-      image = cv2.resize(image, (48, 48))
     # transform data into string format
     image_data = image.tostring()
     assert len(image.shape) == 3

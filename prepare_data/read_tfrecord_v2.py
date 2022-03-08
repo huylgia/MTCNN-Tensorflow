@@ -6,6 +6,19 @@ import cv2
 import os
 #just for RNet and ONet, since I change the method of making tfrecord
 #as for PNet
+def image_color_distort(inputs):
+    inputs = tf.image.random_contrast(inputs, lower=0.5, upper=1.5)
+    inputs = tf.image.random_brightness(inputs, max_delta=0.2)
+    inputs = tf.image.random_hue(inputs,max_delta= 0.2)
+    inputs = tf.image.random_saturation(inputs,lower = 0.5, upper= 1.5)
+    return inputs
+    
+def image_color_distort(inputs):
+    inputs = tf.image.random_contrast(inputs, lower=0.5, upper=1.5)
+    inputs = tf.image.random_brightness(inputs, max_delta=0.2)
+    inputs = tf.image.random_hue(inputs,max_delta= 0.2)
+    inputs = tf.image.random_saturation(inputs,lower = 0.5, upper= 1.5)
+    return inputs
 def read_single_tfrecord(tfrecord_file, batch_size, net):
     # generate a input queue
     # each epoch shuffle
@@ -32,21 +45,34 @@ def read_single_tfrecord(tfrecord_file, batch_size, net):
     image = tf.reshape(image, [image_size, image_size, 3])
     image = (tf.cast(image, tf.float32)-127.5) / 128
     
+
     # image = tf.image.per_image_standardization(image)
     label = tf.cast(image_features['image/label'], tf.float32)
     roi = tf.cast(image_features['image/roi'],tf.float32)
     landmark = tf.cast(image_features['image/landmark'],tf.float32)
-    print('landmark nà: ', landmark)
-    image, label,roi,landmark = tf.train.batch(
+
+    batch_size = batch_size // 2
+    org_image, label,roi,landmark = tf.train.batch(
         [image, label,roi,landmark],
         batch_size=batch_size,
         num_threads=2,
         capacity=1 * batch_size
     )
-    label = tf.reshape(label, [batch_size])
-    roi = tf.reshape(roi,[batch_size,4])
-    landmark = tf.reshape(landmark,[batch_size,8])
-    return image, label, roi,landmark
+    org_label = tf.reshape(label, [batch_size])
+    org_roi = tf.reshape(roi,[batch_size,4])
+    org_landmark = tf.reshape(landmark,[batch_size,8])
+
+    aug_image = image_color_distort(org_image)
+    aug_label = tf.reshape(label, [batch_size])
+    aug_roi = tf.reshape(roi,[batch_size,4])
+    aug_landmark = tf.reshape(landmark,[batch_size,8])
+
+    org_aug_image = tf.concat([org_image,aug_image],0)
+    org_aug_label = tf.concat([org_label,aug_label],0)
+    org_aug_roi = tf.concat([org_roi,aug_roi],0)
+    org_aug_landmark = tf.concat([org_landmark,aug_landmark],0)
+
+    return org_aug_image, org_aug_label, org_aug_roi, org_aug_landmark
 
 def read_multi_tfrecords(tfrecord_files, batch_sizes, net):
     plate_dir = tfrecord_files
