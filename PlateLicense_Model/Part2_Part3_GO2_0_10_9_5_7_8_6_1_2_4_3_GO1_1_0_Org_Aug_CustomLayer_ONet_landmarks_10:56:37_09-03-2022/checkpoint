@@ -1,0 +1,2 @@
+model_checkpoint_path: "/content/MTCNN-Tensorflow/PlateLicense_Model/Part2_Part3_GO2_0_10_9_5_7_8_6_1_2_4_3_GO1_1_0_Org_Aug_CustomLayer_ONet_landmarks_10:56:37_09-03-2022/ONet-3705"
+all_model_checkpoint_paths: "/content/MTCNN-Tensorflow/PlateLicense_Model/Part2_Part3_GO2_0_10_9_5_7_8_6_1_2_4_3_GO1_1_0_Org_Aug_CustomLayer_ONet_landmarks_10:56:37_09-03-2022/ONet-3705"
