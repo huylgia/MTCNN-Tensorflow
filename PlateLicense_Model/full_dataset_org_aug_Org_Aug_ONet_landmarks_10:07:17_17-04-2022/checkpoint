@@ -1,0 +1,2 @@
+model_checkpoint_path: "/content/MTCNN-Tensorflow/PlateLicense_Model/full_dataset_org_aug_Org_Aug_ONet_landmarks_10:07:17_17-04-2022/ONet-4092"
+all_model_checkpoint_paths: "/content/MTCNN-Tensorflow/PlateLicense_Model/full_dataset_org_aug_Org_Aug_ONet_landmarks_10:07:17_17-04-2022/ONet-4092"
